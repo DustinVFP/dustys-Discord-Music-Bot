@@ -1,10 +1,10 @@
 package main
 
-// bot link https://discordapp.com/api/oauth2/authorize?client_id=511179733384429578&scope=bot&permissions=108514368
+// bot link https://discordapp.com/api/oauth2/authorize?client_id=516941386369597441&scope=bot&permissions=518208
 
 import (
 	"fmt"
-	//"flag"
+	"flag"
 	//"os"
 	//"os/signal"
 	//"syscall"
@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
+	"strconv"
 	//"reflect"
 	
 	"github.com/andersfylling/disgord"
@@ -20,19 +21,15 @@ import (
 type Lowconf struct {
 	Token		string
 	DBGLvl		string
-	Prefix		string
-	Prefix2		string
-	Prefix3		string
-	Prefix4		string
+	Prefix		[]string
+	Name		string
 }
 
 var (
-	CFG_Token	string
-	CFG_Debug	int
-	CFG_Prefix1	string
-	CFG_Prefix2	string
-	CFG_Prefix3	string
-	CFG_Prefix4	string
+	conf_Name	string
+	conf_Token	string
+	conf_Debug	int
+	conf_Prefix	[]string
 )
 
 type error interface {
@@ -41,6 +38,24 @@ type error interface {
 
 const version = "0.0.0.0:alpha"
 
+var UseTUI bool
+var chk1 int = 0
+var messagechk1 string = "~~~~~~"
+var messagechk2 string = "~~~~~~~"
+
+func init() {
+	flag.BoolVar(&UseTUI, "tui", false, "Use Tui, true/false")
+	flag.Parse()
+	LogReporter(0,5,"tui flag set to", strconv.FormatBool(UseTUI))
+	
+	setupConf()
+	
+	LogReporter(0,99,"Starting up", conf_Name)
+	LogReporter(1,99,"Version", version)
+	setupConf();
+	LogReporter(0,5,"Prefix is", conf_Prefix[0])
+}
+
 func LogReporter(importance, dbglevel int, info, info2 string) {
 	// Importance levels are, 0: info, 5: message, 10: log, 20: warning, 30: Error, 40: Alert, 50, Critical
 	
@@ -48,36 +63,36 @@ func LogReporter(importance, dbglevel int, info, info2 string) {
 	// 					25: report on regular or higher (normal log messages), 35: report on minimal or higher (Important log messages)
 	
 	// Check debug level of report compared to debug level set in the settings to decide if a message is worth showing
-	if dbglevel > CFG_Debug {
+	if dbglevel > conf_Debug {
 		// check report type
 		var report string
 		switch importance {
 			case 0:
-				report = "> Info :"
+				report = "> Info >"
 			case 1:
-				report = "| Info :"
+				report = "| Info |"
 			case 5: 
-				report = "> message :"
+				report = "> message >"
 			case 10:
-				report = "> Log :"
+				report = "> Log >"
 			case 11:
-				report = "| Log :"
+				report = "| Log >"
 			case 20:
-				report = "> Warning :"
+				report = "> Warning >"
 			case 21:
-				report = "| Warning :"
+				report = "| Warning >"
 			case 30:
-				report = "> Error :"
+				report = "> Error >"
 			case 31:
-				report = "| Error :"
+				report = "| Error >"
 			case 40:
-				report = "> Alert :"
+				report = "> Alert >"
 			case 41:
-				report = "| Alert :"
+				report = "| Alert >"
 			case 50:
-				report = "> Critical :"
+				report = "> Critical >"
 			case 51:
-				report = "| Critical :"
+				report = "| Critical >"
 		}
 		// check if message has 2 values or 3 and then display as appropreate
 		if info2 != "" {
@@ -92,7 +107,7 @@ func setupConf() {
 	_error := false
 	file, err := ioutil.ReadFile("./config.json")
 	if err != nil {
-		CFG_Debug = 0
+		conf_Debug = 0
 		_error = true
 		LogReporter(50, 999999, "Failed to read core config", "")
 		LogReporter(51, 999999, err.Error(), "")
@@ -102,7 +117,7 @@ func setupConf() {
 	
 	err = json.Unmarshal([]byte(file),&data)
 	if err != nil {
-		CFG_Debug = 0
+		conf_Debug = 0
 		_error = true
 		LogReporter(50, 999999, "Failed to read core config", "")
 		LogReporter(51, 999999, err.Error(), "")
@@ -120,45 +135,62 @@ func setupConf() {
 			dbg = 30
 	}
 	
-	CFG_Token = data.Token
-	CFG_Debug = dbg
-	CFG_Prefix1 = data.Prefix
-	CFG_Prefix2 = data.Prefix2
-	CFG_Prefix3 = data.Prefix3
-	CFG_Prefix4 = data.Prefix4
+	conf_Token = data.Token
+	conf_Debug = dbg
+	conf_Prefix = data.Prefix
+	conf_Name = data.Name
 	
 	if !_error {
 		LogReporter(0, 25, "Loaded Config", "")
 	} else {
-		CFG_Debug = 0
+		conf_Debug = 0
 		LogReporter(50, 999999, "Core Config Failed to load", "")
 		panic(err)
 	}
 }
 
 func func_init() {
-	LogReporter(0,99,"Starting up DustysDMB version", version)
-	setupConf();
-	LogReporter(0,5,"Prefix is", CFG_Prefix1)
+
 	//fmt.Println(Token)
 }
 
-func messageDo(msg string) (string, string, error) {
-	var responce, meta string
-	var err error
-	fmt.Println(CFG_Prefix1, "", strings.HasPrefix(msg, CFG_Prefix1))
-	if (strings.HasPrefix(msg, CFG_Prefix1)) == true {
+func prefixCheck(data string) bool {
+	prearraylen := len(conf_Prefix)
+	LogReporter(0,5,"Prefix Amount", strconv.Itoa(prearraylen))
+	for i := 0; i<prearraylen; i++ {
+		pfx := conf_Prefix[i]
+		LogReporter(0,5,"Prefix", pfx)
+		if strings.HasPrefix(data, pfx) {
+			return true
+			break
+		}
+	}
+	return false
+}
+
+func messageDo(message string, session disgord.Session, data *disgord.MessageCreate) /*(string, string, error)*/ {
+	var responce/*, meta*/ string
+	//var err error
+	
+	msg := data.Message
+	
+	messagechk1 = msg.Content
+	
+	ckprfx := prefixCheck(message)
+	
+	if ckprfx {
 		responce = "hello"
+		msg.RespondString(session, responce)
 	}
 	
-	return responce, meta, err
+	messagechk1 = "~~~~~~"
+	//return responce, meta, err
 }
 
 func main() {
-	func_init()
-	
+
 	session, err := disgord.NewSession(&disgord.Config{
-		Token: CFG_Token,
+		Token: conf_Token,
 	})
 	if err != nil {
 		LogReporter(50, 999999, "Failed to open discord session", "")
@@ -175,16 +207,20 @@ func main() {
 	
 	session.On(disgord.EventMessageCreate, func(session disgord.Session, data *disgord.MessageCreate) {
 		msg := data.Message
-		LogReporter(5, 15, "Message recived with content", msg.Content)
+		LogReporter(5, 15, "Message recived", msg.Content)
 		
-		responce, meta, err := messageDo(msg.Content)
-		print(meta)
-		if err != nil {
-			LogReporter(30, 45, "message error", err.Error())
-			msg.RespondString(session, "Error, Something went wrong")
-		} else {
-			msg.RespondString(session, responce)
-		}
+		messagechk2 = msg.Content
+		
+		if (messagechk1 != messagechk2) {
+			go messageDo(msg.Content, session, data)
+			//print(meta)
+			//if err != nil {
+			//	LogReporter(30, 45, "message error", err.Error())
+			//	msg.RespondString(session, "Error, Something went wrong")
+			//} else {
+			//	msg.RespondString(session, responce)
+			//}
+			}
 	})
 	
 	err = session.Connect()
@@ -197,38 +233,5 @@ func main() {
 	//fmt.Printf("Hello, %s!\n", myself.String())
 	LogReporter(0,15, "Running under user", myself.String())
 	
-	session.DisconnectOnInterrupt()
-		
+	session.DisconnectOnInterrupt()	
 }
-
-
-
-/* func main() {
-
-	dg, err := discordgo.New("Bot " + Token)
-	if err != nil {
-		fmt.Println("error opening session: ", err)
-		return
-	}
-
-	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
-
-	// Open a websocket connection to Discord and begin listening.
-	err = dg.Open()
-	if err != nil {
-		fmt.Println("error opening connection:", err)
-		return
-	}
-
-	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot active: Press CTRL-C to exit.")
-	
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
-
-	// Cleanly close down the Discord session.
-	dg.Close()
-}
-*/
