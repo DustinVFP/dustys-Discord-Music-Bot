@@ -1,5 +1,12 @@
 # Ignore the main config #
 config.json
+config/config.json
+
+src/*
+
+# Ignore log files #
+
+log/*
 
 # Ignore compiled source #
 *.com

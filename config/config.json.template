@@ -1,5 +1,5 @@
 {
-	"_NOTICE":"_+_+_+_+_+_+_+_+==== !!! NOTICE THE BOT IS UNDER CONSTRUCTION AND THE VALUES HERE MAY CHANGE !!!, =====+_+_+_+_+_+_+_+_++_"
+	"_NOTICE":"==== !!! NOTICE THE BOT IS UNDER CONSTRUCTION AND THE VALUES HERE MAY CHANGE !!! ====="
 
 	"_name_comment":"server side bot name (doesn't matter to client, only noted on server side logs and such)",
 	"Name": "discordbot",
@@ -7,11 +7,11 @@
 	"_bot_comment":"Discord bot token",
 	"Token": " --== INSERT BOT TOKEN HERE ==-- ",
 	
-	"_debuglevel_comment":"Set debug level aka how much gets logged ( Valid settings are ALL, HIGH, DEFAULT, MINIMAL ))",
+	"_debuglevel_comment":"Set debug level aka how much gets logged ( Valid settings are ALL, HIGH, DEFAULT, MINIMAL )",
 	"DBGLvl": "DEFAULT",
 	
 	"_prefix_comment":"Set the prefix to be used for commands",
-	"Prefix":["u!", "useless!", "hey useless ", "yo mr useless"],
+	"Prefix":["!"],
 	
 	"_database_comment":"The database configuration",
 	"Database":{

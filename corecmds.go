@@ -92,10 +92,10 @@ func cmdcorelove(cmd string, session disgord.Session, data *disgord.MessageCreat
 	content = "Love You "
 	var uid string
 	if cmd == "" {
-		uid = fmt.Sprint("<@",data.Message.Author.ID,".")
+		uid = fmt.Sprint("<@",data.Message.Author.ID,">")
 	} else {
 		if strings.Contains(cmd, "me") {
-			uid = fmt.Sprint("<@",data.Message.Author.ID,".")
+			uid = fmt.Sprint("<@",data.Message.Author.ID,">")
 		} else {
 			uid = cmd
 		}
