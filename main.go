@@ -37,7 +37,8 @@ type error interface {
     Error() string
 }
 
-const version = "0.0.0.0:alpha"
+const version = "v0.0.0.1:alpha"
+const appname = "Dustys Wip Discord Bot"
 
 var UseTUI bool
 var chk1 int = 0

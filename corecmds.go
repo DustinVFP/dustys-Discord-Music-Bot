@@ -12,11 +12,12 @@ var corecmdslist [255]string
 func init() {
 	corecmdslist[0] = "help"
 	corecmdslist[1] = "ping"
-	corecmdslist[2] = "hello"
-	corecmdslist[3] = "test"
-	corecmdslist[4] = "debug"
-	corecmdslist[5] = "dab"
-	corecmdslist[6] = "love"
+	corecmdslist[2] = "version"
+	corecmdslist[3] = "hello"
+	corecmdslist[4] = "test"
+	corecmdslist[5] = "debug"
+	corecmdslist[6] = "dab"
+	corecmdslist[7] = "love"
 	
 	
 }
@@ -39,6 +40,8 @@ func cmdcorehandler(message, args string, session disgord.Session, data *disgord
 			err = cmdcorehelp(args, session, data)
 		case "ping":
 			err = cmdcoreping(args, session, data)
+		case "version":
+			err = cmdcoreversion(args, session, data)
 		case "hello":
 			err = cmdcorehello(args, session, data)
 		case "test":
@@ -63,7 +66,7 @@ func cmdcorehelp(cmd string, session disgord.Session, data *disgord.MessageCreat
 	//detailedconfdsc := [512]string{"The help command, it outputs helpy stuff"}
 	var err error
 	
-	var basichelp string = "``` -| Core commands |- \n > Help: The help command, \n > Ping: Pong!, \n -| Text/Test commands |- \n > Hello: Says hello back```"
+	var basichelp string = "``` -| Core commands |- \n - Help: The help command, \n - Version: Displays the version running and some other info \n - Ping: Pong!, \n -| Text/Test commands |- \n - Hello: Says hello back```"
 	
 	var output string
 	
@@ -108,6 +111,14 @@ func cmdcorelove(cmd string, session disgord.Session, data *disgord.MessageCreat
 func cmdcoreping(cmd string, session disgord.Session, data *disgord.MessageCreate) error {
 	var err error
 	output := "Pong!"
+	data.Message.RespondString(session, output)
+	return err
+}
+
+func cmdcoreversion(cmd string, session disgord.Session, data *disgord.MessageCreate) error {
+	var err error
+	user, err := session.GetCurrentUser()
+	output := fmt.Sprint("Running: ", appname," ", version, "\nlocally configured as: ", conf_Name, "\nRunning under user: ", user.Username,"#",user.Discriminator)
 	data.Message.RespondString(session, output)
 	return err
 }
