@@ -81,7 +81,11 @@ func setupConf() {
 			dbg = 0
 		case "HIGH": 
 			dbg = 10
+		case "NORMAL":
+			dbg = 20
 		case "REGULAR":
+			dbg = 20
+		case "DEFAULT":
 			dbg = 20
 		case "MINIMAL":
 			dbg = 30

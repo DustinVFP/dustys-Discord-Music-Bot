@@ -7,8 +7,8 @@
 	"_bot_comment":"Discord bot token",
 	"Token": " --== INSERT BOT TOKEN HERE ==-- ",
 	
-	"_debuglevel_comment":"Set debug level aka how much gets logged ( Valid settings are ALL, HIGH, DEFAULT, MINIMAL )",
-	"DBGLvl": "DEFAULT",
+	"_debuglevel_comment":"Set debug level aka how much gets logged ( Valid settings are ALL, HIGH, NORMAL, MINIMAL )",
+	"DBGLvl": "NORMAL",
 	
 	"_prefix_comment":"Set the prefix to be used for commands",
 	"Prefix":["!"],
