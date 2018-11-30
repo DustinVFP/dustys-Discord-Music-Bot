@@ -5,9 +5,10 @@ import(
 	"time"
 	"io/ioutil"
 	"encoding/json"
+	"mine/dlogger"
 )
 
-func dlogger.LogOld(importance, dbglevel int, info, info2 string) {
+func LogReporter(importance, dbglevel int, info, info2 string) {
 	// Importance levels are, 0: info, 5: message, 10: log, 20: warning, 30: Error, 40: Alert, 50, Critical
 	
 	// Debug levels are	 5: Only report when set to all (unimportant), 15: report on high (regular debug), 
@@ -53,7 +54,6 @@ func dlogger.LogOld(importance, dbglevel int, info, info2 string) {
 		}
 	}
 }
-
 
 func setupConf() {
 	_error := false
