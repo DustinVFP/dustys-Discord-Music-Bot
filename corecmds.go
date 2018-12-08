@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/andersfylling/disgord"
-	"mine/dlogger"
+	"./dlogger"
 	"strings"
 )
 

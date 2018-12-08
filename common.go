@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"mine/dlogger"
+	"./dlogger"
 	"time"
 )
 
