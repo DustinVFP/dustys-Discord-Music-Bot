@@ -1,7 +1,7 @@
 package main
 
 import (
-	"mine/dlogger"
+	"go.pi.lan/dlogger"
 	"github.com/andersfylling/disgord"
 	"fmt"
 	"strings"
