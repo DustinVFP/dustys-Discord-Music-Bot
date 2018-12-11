@@ -14,7 +14,7 @@ import (
 	//"time"
 	"strconv"
 	//"reflect"
-	"go.pi.lan/dlogger"
+	"dlogger"
 	
 	"github.com/andersfylling/disgord"
 )

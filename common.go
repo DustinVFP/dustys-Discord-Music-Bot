@@ -5,7 +5,7 @@ import(
 	"time"
 	"io/ioutil"
 	"encoding/json"
-	"go.pi.lan/dlogger"
+	"dlogger"
 )
 
 func LogReporter(importance, dbglevel int, info, info2 string) {
