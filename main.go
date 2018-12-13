@@ -45,17 +45,18 @@ var chk1 int = 0
 var messagechk1 string = "~~~~~~"
 var messagechk2 string = "~~~~~~~"
 
+
+// do some checks and init some stuff
 func init() {
-	flag.BoolVar(&UseTUI, "tui", false, "Use Tui, true/false")
+	flag.BoolVar(&UseTUI, "tui", false, "Use Tui, true/false") // not currently used
 	flag.Parse()
 	conf_Debug = 5
 	dlogger.LogOld(0,15,"tui flag set to", strconv.FormatBool(UseTUI))
 	
-	setupConf()
+	loadConf() // function name describes itself, but basically it loads in the config
 	
 	dlogger.LogOld(0,99,"Starting up", conf_Name)
 	dlogger.LogOld(1,99,"Version", version)
-	setupConf();
 	dlogger.LogOld(0,15,"Prefix is", conf_Prefix[0])
 }
 

@@ -1,13 +1,15 @@
 package main
 
 import(
-	"fmt"
-	"time"
+	//"fmt"
+	//"time"
 	"io/ioutil"
 	"encoding/json"
 	"gitea.pi.lan/dvf-productions/dlogger"
 )
 
+// depricated as it has been seperated off into its own package to be developed seperately
+/*
 func LogReporter(importance, dbglevel int, info, info2 string) {
 	// Importance levels are, 0: info, 5: message, 10: log, 20: warning, 30: Error, 40: Alert, 50, Critical
 	
@@ -54,8 +56,10 @@ func LogReporter(importance, dbglevel int, info, info2 string) {
 		}
 	}
 }
+*/
 
-func setupConf() {
+// shenanigans for loading in the configuration
+func loadConf() {
 	_error := false
 	file, err := ioutil.ReadFile("./config/config.json")
 	if err != nil {
