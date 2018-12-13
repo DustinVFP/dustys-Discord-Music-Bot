@@ -5,7 +5,7 @@ import(
 	"time"
 	"io/ioutil"
 	"encoding/json"
-	"dlogger"
+	"gitea.pi.lan/dvf-productions/dlogger"
 )
 
 func LogReporter(importance, dbglevel int, info, info2 string) {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dlogger"
+	"gitea.pi.lan/dvf-productions/dlogger"
 	"github.com/andersfylling/disgord"
 	"fmt"
 	"strings"

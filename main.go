@@ -14,7 +14,7 @@ import (
 	//"time"
 	"strconv"
 	//"reflect"
-	"dlogger"
+	"gitea.pi.lan/dvf-productions/dlogger"
 	
 	"github.com/andersfylling/disgord"
 )
