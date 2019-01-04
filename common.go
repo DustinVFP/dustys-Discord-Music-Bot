@@ -8,12 +8,12 @@ import(
 	"dlogger"
 )
 
-func LogReporter(importance, dbglevel int, info, info2 string) {
+func logReporter(importance, dbglevel int, info, info2 string) {
 	// Importance levels are, 0: info, 5: message, 10: log, 20: warning, 30: Error, 40: Alert, 50, Critical
-	
+
 	// Debug levels are	 5: Only report when set to all (unimportant), 15: report on high (regular debug), 
 	// 					25: report on regular or higher (normal log messages), 35: report on minimal or higher (Important log messages)
-	
+
 	// Check debug level of report compared to debug level set in the settings to decide if a message is worth showing
 	if dbglevel > conf_Debug {
 		// check report type
@@ -23,7 +23,7 @@ func LogReporter(importance, dbglevel int, info, info2 string) {
 				report = "> Info >"
 			case 1:
 				report = "| Info |"
-			case 5: 
+			case 5:
 				report = "> message >"
 			case 10:
 				report = "> Log >"
@@ -66,7 +66,7 @@ func setupConf() {
 		//fmt.Println(" > Critical Error -> Failed to read core config \n > Critical Error -> Error: ", err)
 	}
 	var data Lowconf
-	
+
 	err = json.Unmarshal([]byte(file),&data)
 	if err != nil {
 		conf_Debug = 5
@@ -74,12 +74,12 @@ func setupConf() {
 		dlogger.LogOld(50, 999999, "Failed to read core config", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 	}
-	
+
 	var dbg int
 	switch data.DBGLvl {
 		case "ALL":
 			dbg = 0
-		case "HIGH": 
+		case "HIGH":
 			dbg = 10
 		case "NORMAL":
 			dbg = 20
@@ -90,12 +90,12 @@ func setupConf() {
 		case "MINIMAL":
 			dbg = 30
 	}
-	
+
 	conf_Token = data.Token
 	conf_Debug = dbg
 	conf_Prefix = data.Prefix
 	conf_Name = data.Name
-	
+
 	if !_error {
 		dlogger.LogOld(0, 35, "Loaded Config", "")
 	} else {

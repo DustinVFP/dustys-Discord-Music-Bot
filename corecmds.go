@@ -18,8 +18,8 @@ func init() {
 	corecmdslist[5] = "debug"
 	corecmdslist[6] = "dab"
 	corecmdslist[7] = "love"
-	
-	
+
+
 }
 
 type helpstruct struct {
@@ -34,7 +34,7 @@ func cmdcorehandler(message, args string, session disgord.Session, data *disgord
 	msg := data.Message
 	//var responce string = "debug check ignore this"
 	var err error
-	
+
 	switch message {
 		case "help":
 			err = cmdcorehelp(args, session, data)
@@ -65,18 +65,18 @@ func cmdcorehelp(cmd string, session disgord.Session, data *disgord.MessageCreat
 	//detailedconfcmd := [512]string{"Help"}
 	//detailedconfdsc := [512]string{"The help command, it outputs helpy stuff"}
 	var err error
-	
-	var basichelp string = "``` -| Core commands |- \n - Help: The help command, \n - Version: Displays the version running and some other info \n - Ping: Pong!, \n -| Text/Test commands |- \n - Hello: Says hello back```"
-	
+
+	var basichelp = "``` -| Core commands |- \n - Help: The help command, \n - Version: Displays the version running and some other info \n - Ping: Pong!, \n -| Text/Test commands |- \n - Hello: Says hello back```"
+
 	var output string
-	
+
 	if cmd == "" {
 		output = basichelp
 	} else {
 		output = "to be written"
 		// to be written
 	}
-	
+
 	data.Message.RespondString(session, output)
 	return err
 }

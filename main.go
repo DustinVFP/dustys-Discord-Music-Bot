@@ -15,11 +15,11 @@ import (
 	"strconv"
 	//"reflect"
 	"dlogger"
-	
+
 	"github.com/andersfylling/disgord"
 )
 
-type Lowconf struct {
+type lowconf struct {
 	Token		string
 	DBGLvl		string
 	Prefix		[]string
@@ -27,10 +27,10 @@ type Lowconf struct {
 }
 
 var (
-	conf_Name	string
-	conf_Token	string
-	conf_Debug	int
-	conf_Prefix	[]string
+	confName	string
+	confToken	string
+	confDebug	int
+	confPrefix	[]string
 )
 
 type error interface {
@@ -40,30 +40,30 @@ type error interface {
 const version = "v0.0.0.1:alpha"
 const appname = "Dustys Wip Discord Bot"
 
-var UseTUI bool
-var chk1 int = 0
-var messagechk1 string = "~~~~~~"
-var messagechk2 string = "~~~~~~~"
+var useTUI bool
+var chk1 int
+var messagechk1 = "~~~~~~"
+var messagechk2 = "~~~~~~~"
 
 func init() {
 	flag.BoolVar(&UseTUI, "tui", false, "Use Tui, true/false")
 	flag.Parse()
-	conf_Debug = 5
+	confDebug = 5
 	dlogger.LogOld(0,15,"tui flag set to", strconv.FormatBool(UseTUI))
-	
+
 	setupConf()
-	
-	dlogger.LogOld(0,99,"Starting up", conf_Name)
+
+	dlogger.LogOld(0,99,"Starting up", confName)
 	dlogger.LogOld(1,99,"Version", version)
 	setupConf();
-	dlogger.LogOld(0,15,"Prefix is", conf_Prefix[0])
+	dlogger.LogOld(0,15,"Prefix is", confPrefix[0])
 }
 
 func prefixCheck(data string) (bool, string) {
-	prearraylen := len(conf_Prefix)
+	prearraylen := len(confPrefix)
 	dlogger.LogOld(0,5,"Prefix Amount", strconv.Itoa(prearraylen))
 	for i := 0; i<prearraylen; i++ {
-		pfx := conf_Prefix[i]
+		pfx := confPrefix[i]
 		dlogger.LogOld(0,5,"Prefix", pfx)
 		if strings.HasPrefix(data, pfx) {
 			return true, pfx
@@ -76,17 +76,17 @@ func prefixCheck(data string) (bool, string) {
 func messageDo(message string, session disgord.Session, data *disgord.MessageCreate) /*(string, string, error)*/ {
 	//var responce/*, meta*/ string
 	//var err error
-	
+
 	msg := data.Message
-	
+
 	messagechk1 = msg.Content
-	
+
 	ckprfx, prefix := prefixCheck(message)
-	
+
 	if ckprfx {
 		message2 := strings.Replace(message, prefix, "", -1)
 		dlogger.LogOld(0,5,"cmd data",message2)
-		
+
 		prearraylen := len(corecmdslist)
 		dlogger.LogOld(0,5,"core cmds count", strconv.Itoa(prearraylen))
 		for i := 0; i<prearraylen; i++ {
@@ -103,11 +103,11 @@ func messageDo(message string, session disgord.Session, data *disgord.MessageCre
 				break
 			}
 		}
-		
+
 		//responce = "hello"
 		//msg.RespondString(session, responce)
 	}
-	
+
 	messagechk1 = "~~~~~~"
 	//return responce, meta, err
 }
@@ -115,28 +115,28 @@ func messageDo(message string, session disgord.Session, data *disgord.MessageCre
 func main() {
 
 	session, err := disgord.NewSession(&disgord.Config{
-		Token: conf_Token,
-		Debug: true, 
+		Token: confToken,
+		Debug: true,
 	})
 	if err != nil {
 		dlogger.LogOld(50, 999999, "Failed to open discord session", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 		panic(err)
 	}
-	
+
 	myself, err := session.GetCurrentUser()
 	if err != nil {
 		dlogger.LogOld(50, 999999, "Discord Session error", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 		panic(err)
 	}
-	
+
 	session.On(disgord.EventMessageCreate, func(session disgord.Session, data *disgord.MessageCreate) {
 		msg := data.Message
 		dlogger.LogOld(5, 15, "Message recived", msg.Content)
-		
+
 		messagechk2 = msg.Content
-		
+
 		user, err := session.GetCurrentUser()
 		if err != nil {
 			dlogger.LogOld(30,25,"Error getting current user","")
@@ -149,20 +149,20 @@ func main() {
 				}
 			}
 	})
-	
+
 	err = session.Connect()
 	if err != nil {
 		dlogger.LogOld(50, 999999, "Discord Session error", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 		panic(err)
 	}
-	
-	dlogger.SetLevels(conf_Debug)
+
+	dlogger.SetLevels(confDebug)
 	tst := dlogger.Check()
 	dlogger.LogOld(0,15, "debug check", strconv.Itoa(tst))
 	dlogger.LogExtraInfo(15,"test","")
-	
+
 	dlogger.LogOld(0,15, "Running under user", myself.String())
-	
-	session.DisconnectOnInterrupt()	
+
+	session.DisconnectOnInterrupt()
 }
