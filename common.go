@@ -1,58 +1,27 @@
 package main
 
 import(
-	"fmt"
-	"time"
+	//"fmt"
+	//"time"
 	"io/ioutil"
 	"encoding/json"
 	"./dlogger"
 )
 
-func logReporter(importance, dbglevel int, info, info2 string) {
-	// Importance levels are, 0: info, 5: message, 10: log, 20: warning, 30: Error, 40: Alert, 50, Critical
+type dbConf struct {
+	DBType		string
+	DBAddress	string
+	DBPass		string
+	DBUser		string
+	DBName		string
+}
 
-	// Debug levels are	 5: Only report when set to all (unimportant), 15: report on high (regular debug),
-	// 					25: report on regular or higher (normal log messages), 35: report on minimal or higher (Important log messages)
-
-	// Check debug level of report compared to debug level set in the settings to decide if a message is worth showing
-	if dbglevel > confDebug {
-		// check report type
-		var report string
-		switch importance {
-			case 0:
-				report = "> Info >"
-			case 1:
-				report = "| Info |"
-			case 5:
-				report = "> message >"
-			case 10:
-				report = "> Log >"
-			case 11:
-				report = "| Log >"
-			case 20:
-				report = "> Warning >"
-			case 21:
-				report = "| Warning >"
-			case 30:
-				report = "> Error >"
-			case 31:
-				report = "| Error >"
-			case 40:
-				report = "> Alert >"
-			case 41:
-				report = "| Alert >"
-			case 50:
-				report = "> Critical >"
-			case 51:
-				report = "| Critical >"
-		}
-		// check if message has 2 values or 3 and then display as appropreate
-		if info2 != "" {
-			fmt.Println(time.Now().Format("2006-01-02 03:04.05PM"), "", report, info, ":", info2)
-		} else {
-			fmt.Println(time.Now().Format("2006-01-02 03:04.05PM"), "", report, info)
-		}
-	}
+type lowconf struct {
+	Token	string
+	DBGLvl	string
+	Prefix	[]string
+	Name	string
+	Database dbConf
 }
 
 func setupConf() {
@@ -95,6 +64,12 @@ func setupConf() {
 	confDebug = dbg
 	confPrefix = data.Prefix
 	confName = data.Name
+
+	confdbType = data.Database.DBType
+	confdbAddress = data.Database.DBAddress
+	confdbUser = data.Database.DBUser
+	confdbPass = data.Database.DBPass
+	confdbName = data.Database.DBName
 
 	if !_error {
 		dlogger.LogOld(0, 35, "Loaded Config", "")

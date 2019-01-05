@@ -2,4 +2,5 @@ this is a placeholder repository for a work in progress discord bot (which i am 
 
 written in golang, using the disgord library [github.com/andersfylling/disgord](disgord)
 
-estimated date of functionality: hopefullyi functional by december and usable before the end of 2018
+~~estimated date of functionality: hopefullyi functional by december and usable before the end of 2018~~
+that didn't happen so hopefully functional by april 2019
