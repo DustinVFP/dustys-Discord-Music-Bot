@@ -5,17 +5,17 @@ import(
 	"time"
 	"io/ioutil"
 	"encoding/json"
-	"dlogger"
+	"./dlogger"
 )
 
 func logReporter(importance, dbglevel int, info, info2 string) {
 	// Importance levels are, 0: info, 5: message, 10: log, 20: warning, 30: Error, 40: Alert, 50, Critical
 
-	// Debug levels are	 5: Only report when set to all (unimportant), 15: report on high (regular debug), 
+	// Debug levels are	 5: Only report when set to all (unimportant), 15: report on high (regular debug),
 	// 					25: report on regular or higher (normal log messages), 35: report on minimal or higher (Important log messages)
 
 	// Check debug level of report compared to debug level set in the settings to decide if a message is worth showing
-	if dbglevel > conf_Debug {
+	if dbglevel > confDebug {
 		// check report type
 		var report string
 		switch importance {
@@ -59,17 +59,17 @@ func setupConf() {
 	_error := false
 	file, err := ioutil.ReadFile("./config/config.json")
 	if err != nil {
-		conf_Debug = 5
+		confDebug = 5
 		_error = true
 		dlogger.LogOld(50, 999999, "Failed to read core config", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 		//fmt.Println(" > Critical Error -> Failed to read core config \n > Critical Error -> Error: ", err)
 	}
-	var data Lowconf
+	var data lowconf
 
 	err = json.Unmarshal([]byte(file),&data)
 	if err != nil {
-		conf_Debug = 5
+		confDebug = 5
 		_error = true
 		dlogger.LogOld(50, 999999, "Failed to read core config", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
@@ -91,15 +91,15 @@ func setupConf() {
 			dbg = 30
 	}
 
-	conf_Token = data.Token
-	conf_Debug = dbg
-	conf_Prefix = data.Prefix
-	conf_Name = data.Name
+	confToken = data.Token
+	confDebug = dbg
+	confPrefix = data.Prefix
+	confName = data.Name
 
 	if !_error {
 		dlogger.LogOld(0, 35, "Loaded Config", "")
 	} else {
-		conf_Debug = 0
+		confDebug = 0
 		dlogger.LogOld(50, 999999, "Core Config Failed to load", "")
 		panic(err)
 	}

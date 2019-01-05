@@ -14,7 +14,7 @@ import (
 	//"time"
 	"strconv"
 	//"reflect"
-	"dlogger"
+	"./dlogger"
 
 	"github.com/andersfylling/disgord"
 )
@@ -24,13 +24,21 @@ type lowconf struct {
 	DBGLvl		string
 	Prefix		[]string
 	Name		string
-}
+	Database struct {
+		DBAddress	string
+		DBPass		string
+		}
+	}
 
 var (
 	confName	string
 	confToken	string
 	confDebug	int
 	confPrefix	[]string
+
+	confdbURL	string
+	confdbPass	string
+	confdbType	string
 )
 
 type error interface {
@@ -42,14 +50,24 @@ const appname = "Dustys Wip Discord Bot"
 
 var useTUI bool
 var chk1 int
-var messagechk1 = "~~~~~~"
-var messagechk2 = "~~~~~~~"
+var messagechk string
+
+type cmddata struct {
+	cmdFunc		func(args []string, s disgord.Session, d *disgord.MessageCreate)error
+	cmdName		string
+	cmdCalls	[]string
+	cmdMinDesc	string
+	cmdFullDesc string
+	cmdFirstChr string
+}
+
+var cmdarray = make([]cmddata, 0)
 
 func init() {
-	flag.BoolVar(&UseTUI, "tui", false, "Use Tui, true/false")
+	flag.BoolVar(&useTUI, "tui", false, "Use Tui, true/false")
 	flag.Parse()
 	confDebug = 5
-	dlogger.LogOld(0,15,"tui flag set to", strconv.FormatBool(UseTUI))
+	dlogger.LogOld(0,15,"tui flag set to", strconv.FormatBool(useTUI))
 
 	setupConf()
 
@@ -60,55 +78,89 @@ func init() {
 }
 
 func prefixCheck(data string) (bool, string) {
-	prearraylen := len(confPrefix)
-	dlogger.LogOld(0,5,"Prefix Amount", strconv.Itoa(prearraylen))
-	for i := 0; i<prearraylen; i++ {
-		pfx := confPrefix[i]
-		dlogger.LogOld(0,5,"Prefix", pfx)
-		if strings.HasPrefix(data, pfx) {
-			return true, pfx
+
+	arraylen := len(confPrefix)
+	dlogger.LogOld(0,5,"Prefix Amount", strconv.Itoa(arraylen))
+	dlogger.LogOld(0,5,"Prefix", fmt.Sprint(confPrefix))
+
+	for i := 0; i < arraylen; i++ {
+		if strings.HasPrefix(data, confPrefix[i]) {
+			return true, confPrefix[i]
 			break
 		}
 	}
 	return false, ""
 }
 
-func messageDo(message string, session disgord.Session, data *disgord.MessageCreate) /*(string, string, error)*/ {
+func messageDo(session disgord.Session, data *disgord.MessageCreate) /*(string, string, error)*/ {
 	//var responce/*, meta*/ string
 	//var err error
 
-	msg := data.Message
+	messagechk = data.Message.ID.String()
 
-	messagechk1 = msg.Content
-
-	ckprfx, prefix := prefixCheck(message)
+	ckprfx, prefix := prefixCheck(data.Message.Content)
 
 	if ckprfx {
-		message2 := strings.Replace(message, prefix, "", -1)
-		dlogger.LogOld(0,5,"cmd data",message2)
+		msg := strings.Replace(data.Message.Content, prefix, "", -1)
+		arg := strings.Fields(msg)
+		cmd := arg[0]
 
-		prearraylen := len(corecmdslist)
-		dlogger.LogOld(0,5,"core cmds count", strconv.Itoa(prearraylen))
-		for i := 0; i<prearraylen; i++ {
-			cmd := corecmdslist[i]
-			if cmd == "" {
-				break
+			// some debug code
+		if confDebug < 5 {
+			dlogger.LogOld(0,5,"cmd", cmd)
+			dlogger.LogOld(0,5,"args", fmt.Sprint(arg))
+
+			arraylen3 := len(arg)
+			dlogger.LogOld(0,5,"Argamt", strconv.Itoa(arraylen3))
+
+			for i := 0; i < arraylen3; i++ {
+				dlogger.LogOld(0,5,"Arg", arg[i])
 			}
-			dlogger.LogOld(0,5,"cmdchk", cmd)
-			if strings.HasPrefix(message2, cmd) {
-				dta := strings.Replace(message2, cmd, "", -1)
-				dlogger.LogOld(0,5,"command", cmd)
-				dlogger.LogOld(0,5,"arguments", dta)
-				go cmdcorehandler(cmd, dta , session, data)
-				break
+		}
+
+		dlogger.LogOld(0,5,"cmd data",data.Message.Content)
+
+		arraylen := len(cmdarray)
+		dlogger.LogOld(0,5,"cmds count", strconv.Itoa(arraylen))
+
+		for i := 0; i < arraylen; i++ {
+			if strings.HasPrefix(cmd, cmdarray[i].cmdFirstChr) {
+
+				arraylen2 := len(cmdarray[i].cmdCalls)
+
+				dlogger.LogOld(0,5,"call count", strconv.Itoa(arraylen2))
+
+				for i2 := 0; i2 < arraylen2; i2++ {
+				cmdc := cmdarray[i].cmdCalls[i2]
+				dlogger.LogOld(0,5,"cmdc", cmdc)
+					if cmdc == "" {
+						break
+					}
+					if cmd == cmdc {
+						dlogger.LogOld(0,5,"cmd data",cmdc)
+						dlogger.LogOld(0,5,cmdc, cmd)
+						cmdarray[i].cmdFunc([]string{}, session, data)
+					}
+				}
+			} else {
+				if cmdarray[i].cmdFirstChr == "" {
+					break
+				}
 			}
+			//dlogger.LogOld(0,5,"cmdchk", cmd)
+			//if strings.HasPrefix(msg, cmd) {
+			//	dta := strings.Replace(msg, cmd, "", -1)
+			//	dlogger.LogOld(0,5,"command", cmd)
+			//	dlogger.LogOld(0,5,"arguments", dta)
+			//	go cmdcorehandler(cmd, dta , session, data)
+			//	break
+			//}
 		}
 
 		//responce = "hello"
 		//msg.RespondString(session, responce)
 	}
 
-	messagechk1 = "~~~~~~"
 	//return responce, meta, err
 }
 
@@ -135,8 +187,6 @@ func main() {
 		msg := data.Message
 		dlogger.LogOld(5, 15, "Message recived", msg.Content)
 
-		messagechk2 = msg.Content
-
 		user, err := session.GetCurrentUser()
 		if err != nil {
 			dlogger.LogOld(30,25,"Error getting current user","")
@@ -144,8 +194,8 @@ func main() {
 		fmt.Println(user.ID)
 		fmt.Println(data.Message.Author)
 		if data.Message.Author.ID != user.ID {
-			if (messagechk1 != messagechk2) {
-				go messageDo(msg.Content, session, data)
+			if (msg.ID.String() != messagechk) {
+				go messageDo(session, data)
 				}
 			}
 	})

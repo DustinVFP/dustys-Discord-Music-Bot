@@ -1,10 +1,11 @@
 package main
 
 import (
-	"dlogger"
+	"./dlogger"
 	"github.com/andersfylling/disgord"
 	"fmt"
 	"strings"
+	"time"
 )
 
 var corecmdslist [255]string
@@ -18,8 +19,7 @@ func init() {
 	corecmdslist[5] = "debug"
 	corecmdslist[6] = "dab"
 	corecmdslist[7] = "love"
-
-
+	corecmdslist[8] = "stest"
 }
 
 type helpstruct struct {
@@ -28,6 +28,25 @@ type helpstruct struct {
 	dhdescription 	string
 	helshort		string
 	cmdtitle		string
+}
+
+var cmdCoreSTest cmddata
+
+func init() {
+	cmdarray = append(cmdarray, (cmddata{
+		cmdFunc:	func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
+			var error error
+			output := "test for possible better command handler and such\n"
+			data.Message.RespondString(session, output)
+			dlogger.LogOld(0,0,"Woop",output)
+			return error
+		},
+		cmdName:	"SpecialTest",
+		cmdCalls:	[]string{"stest","st"},
+		cmdMinDesc:	"Special Test for testing new command handler prototype",
+		cmdFullDesc:"Special Test for testing new command handler prototype",
+		cmdFirstChr:"s",
+	}))
 }
 
 func cmdcorehandler(message, args string, session disgord.Session, data *disgord.MessageCreate) {
@@ -52,6 +71,8 @@ func cmdcorehandler(message, args string, session disgord.Session, data *disgord
 			err = cmdcoredab(args, session, data)
 		case "love":
 			err = cmdcorelove(args, session, data)
+		case "stest":
+			//err = cmdCoreSTest.cmdFunc([]string{args}, session, data)
 	}
 	if err != nil {
 		dlogger.LogOld(30,35,"responce error", err.Error())
@@ -110,7 +131,17 @@ func cmdcorelove(cmd string, session disgord.Session, data *disgord.MessageCreat
 
 func cmdcoreping(cmd string, session disgord.Session, data *disgord.MessageCreate) error {
 	var err error
-	output := "Pong!"
+
+	var msgtime = data.Message.Timestamp
+	var currenttime = time.Now()
+
+	difference := currenttime.Sub(msgtime)
+
+	output := fmt.Sprintf(
+		"Pong!\n message sent at %s processed at %s \n Difference: %v",
+		msgtime.Format("3:04:05.000 PM"), currenttime.UTC().Format("3:04:05.000 PM"), difference.Seconds(),
+	)
+
 	data.Message.RespondString(session, output)
 	return err
 }
@@ -118,7 +149,7 @@ func cmdcoreping(cmd string, session disgord.Session, data *disgord.MessageCreat
 func cmdcoreversion(cmd string, session disgord.Session, data *disgord.MessageCreate) error {
 	var err error
 	user, err := session.GetCurrentUser()
-	output := fmt.Sprint("Running: ", appname," ", version, "\nlocally configured as: ", conf_Name, "\nRunning under user: ", user.Username,"#",user.Discriminator)
+	output := fmt.Sprint("Running: ", appname," ", version, "\nlocally configured as: ", confName, "\nRunning under user: ", user.Username,"#",user.Discriminator)
 	data.Message.RespondString(session, output)
 	return err
 }
