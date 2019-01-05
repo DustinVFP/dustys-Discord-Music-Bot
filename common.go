@@ -25,7 +25,7 @@ type lowconf struct {
 }
 
 // shenanigans for loading in the configuration
-func loadConf() {
+func setupConf() {
 	_error := false
 	file, err := ioutil.ReadFile("./config/config.json")
 	if err != nil {
