@@ -14,15 +14,10 @@ import (
 	//"time"
 	"strconv"
 	//"reflect"
-<<<<<<< HEAD
 	"./dlogger"
 	//"database/sql"
 	//_ "github.com/go-sql-driver/mysql"
 
-=======
-	"gitea.pi.lan/dvf-productions/dlogger"
-	
->>>>>>> ea46c40178f42a40a7332ab2ca2005d0bc1be1fa
 	"github.com/andersfylling/disgord"
 )
 
@@ -43,7 +38,7 @@ type error interface {
 	Error() string
 }
 
-const version = "v0.0.0.1:alpha"
+const version = "v0.0.1.0:alpha"
 const appname = "Dustys Wip Discord Bot"
 
 var useTUI bool
@@ -82,9 +77,9 @@ func init() {
 	flag.Parse()
 	conf_Debug = 5
 	dlogger.LogOld(0,15,"tui flag set to", strconv.FormatBool(UseTUI))
-	
+
 	loadConf() // function name describes itself, but basically it loads in the config
-	
+
 	dlogger.LogOld(0,99,"Starting up", conf_Name)
 	dlogger.LogOld(1,99,"Version", version)
 	dlogger.LogOld(0,15,"Prefix is", conf_Prefix[0])
