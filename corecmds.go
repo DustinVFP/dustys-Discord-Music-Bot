@@ -1,12 +1,7 @@
 package main
 
 import (
-<<<<<<< HEAD
 	"./dlogger"
-=======
-	"gitea.pi.lan/dvf-productions/dlogger"
-	"github.com/andersfylling/disgord"
->>>>>>> ea46c40178f42a40a7332ab2ca2005d0bc1be1fa
 	"fmt"
 	"github.com/andersfylling/disgord"
 	"time"

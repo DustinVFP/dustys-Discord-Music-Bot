@@ -60,7 +60,6 @@ var cmdarray = make([]cmddata, 0)
 
 // do some checks and init some stuff
 func init() {
-<<<<<<< HEAD
 	flag.BoolVar(&useTUI, "tui", false, "Use Tui, true/false")
 	flag.Parse()
 	confDebug = 5
@@ -72,18 +71,6 @@ func init() {
 	dlogger.LogOld(1, 99, "Version", version)
 	setupConf()
 	dlogger.LogOld(0, 15, "Prefix is", confPrefix[0])
-=======
-	flag.BoolVar(&UseTUI, "tui", false, "Use Tui, true/false") // not currently used
-	flag.Parse()
-	conf_Debug = 5
-	dlogger.LogOld(0,15,"tui flag set to", strconv.FormatBool(UseTUI))
-
-	loadConf() // function name describes itself, but basically it loads in the config
-
-	dlogger.LogOld(0,99,"Starting up", conf_Name)
-	dlogger.LogOld(1,99,"Version", version)
-	dlogger.LogOld(0,15,"Prefix is", conf_Prefix[0])
->>>>>>> ea46c40178f42a40a7332ab2ca2005d0bc1be1fa
 }
 
 func prefixCheck(data string) (bool, string) {
