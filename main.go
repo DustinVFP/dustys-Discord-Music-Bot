@@ -11,7 +11,7 @@ import (
 	//"io/ioutil"
 	//"encoding/json"
 	"strings"
-	//"time"
+	"time"
 	"strconv"
 	//"reflect"
 	"./dlogger"
@@ -40,6 +40,8 @@ type error interface {
 
 const version = "v0.0.1.0:alpha"
 const appname = "Dustys Wip Discord Bot"
+
+var starttime = time.Now()
 
 var useTUI bool
 var chk1 int
@@ -176,8 +178,8 @@ func main() {
 	//defer db.Close()
 
 	session, err := disgord.NewSession(&disgord.Config{
-		Token: confToken,
-		Debug: true,
+		BotToken: confToken,
+		Logger: disgord.DefaultLogger(true),
 	})
 	if err != nil {
 		dlogger.LogOld(50, 999999, "Failed to open discord session", "")
@@ -185,7 +187,7 @@ func main() {
 		panic(err)
 	}
 
-	myself, err := session.GetCurrentUser()
+	myself, err := session.GetCurrentUser().Execute()
 	if err != nil {
 		dlogger.LogOld(50, 999999, "Discord Session error", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
@@ -196,7 +198,7 @@ func main() {
 		msg := data.Message
 		dlogger.LogOld(5, 15, "Message recived", msg.Content)
 
-		user, err := session.GetCurrentUser()
+		user, err := session.GetCurrentUser().Execute()
 		if err != nil {
 			dlogger.LogOld(30, 25, "Error getting current user", "")
 		}

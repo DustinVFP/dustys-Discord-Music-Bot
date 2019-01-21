@@ -33,3 +33,5 @@ func init() {
 		cmdModule:   "example",														//the module which the command exists in
 	}))
 }
+
+// this file just exists as example code which i made to try show someone
