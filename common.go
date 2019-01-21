@@ -1,5 +1,29 @@
 package main
 
+<<<<<<< HEAD
+import(
+	//"fmt"
+	//"time"
+	"io/ioutil"
+	"encoding/json"
+	"./dlogger"
+)
+
+type dbConf struct {
+	DBType		string
+	DBAddress	string
+	DBPass		string
+	DBUser		string
+	DBName		string
+}
+
+type lowconf struct {
+	Token	string
+	DBGLvl	string
+	Prefix	[]string
+	Name	string
+	Database dbConf
+=======
 import (
 	"encoding/json"
 	"fmt"
@@ -53,23 +77,31 @@ func LogReporter(importance, dbglevel int, info, info2 string) {
 			fmt.Println(time.Now().Format("2006-01-02 03:04.05PM"), "", report, info)
 		}
 	}
+>>>>>>> master
 }
 
+// shenanigans for loading in the configuration
 func setupConf() {
 	_error := false
 	file, err := ioutil.ReadFile("./config/config.json")
 	if err != nil {
-		conf_Debug = 5
+		confDebug = 5
 		_error = true
 		dlogger.LogOld(50, 999999, "Failed to read core config", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 		//fmt.Println(" > Critical Error -> Failed to read core config \n > Critical Error -> Error: ", err)
 	}
+<<<<<<< HEAD
+	var data lowconf
+
+	err = json.Unmarshal([]byte(file),&data)
+=======
 	var data Lowconf
 
 	err = json.Unmarshal([]byte(file), &data)
+>>>>>>> master
 	if err != nil {
-		conf_Debug = 5
+		confDebug = 5
 		_error = true
 		dlogger.LogOld(50, 999999, "Failed to read core config", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
@@ -77,6 +109,32 @@ func setupConf() {
 
 	var dbg int
 	switch data.DBGLvl {
+<<<<<<< HEAD
+		case "ALL":
+			dbg = 0
+		case "HIGH":
+			dbg = 10
+		case "NORMAL":
+			dbg = 20
+		case "REGULAR":
+			dbg = 20
+		case "DEFAULT":
+			dbg = 20
+		case "MINIMAL":
+			dbg = 30
+	}
+
+	confToken = data.Token
+	confDebug = dbg
+	confPrefix = data.Prefix
+	confName = data.Name
+
+	confdbType = data.Database.DBType
+	confdbAddress = data.Database.DBAddress
+	confdbUser = data.Database.DBUser
+	confdbPass = data.Database.DBPass
+	confdbName = data.Database.DBName
+=======
 	case "ALL":
 		dbg = 0
 	case "HIGH":
@@ -95,11 +153,12 @@ func setupConf() {
 	conf_Debug = dbg
 	conf_Prefix = data.Prefix
 	conf_Name = data.Name
+>>>>>>> master
 
 	if !_error {
 		dlogger.LogOld(0, 35, "Loaded Config", "")
 	} else {
-		conf_Debug = 0
+		confDebug = 0
 		dlogger.LogOld(50, 999999, "Core Config Failed to load", "")
 		panic(err)
 	}

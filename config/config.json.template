@@ -1,25 +1,25 @@
 {
-	"_NOTICE":"==== !!! NOTICE THE BOT IS UNDER CONSTRUCTION AND THE VALUES HERE MAY CHANGE !!! ====="
+	"_NOTICE":"==== !!! NOTICE THE BOT IS UNDER CONSTRUCTION AND THE VALUES HERE MAY CHANGE !!! =====",
 
 	"_name_comment":"server side bot name (doesn't matter to client, only noted on server side logs and such)",
 	"Name": "discordbot",
-	
+
 	"_bot_comment":"Discord bot token",
 	"Token": " --== INSERT BOT TOKEN HERE ==-- ",
-	
+
 	"_debuglevel_comment":"Set debug level aka how much gets logged ( Valid settings are ALL, HIGH, NORMAL, MINIMAL )",
 	"DBGLvl": "NORMAL",
-	
+
 	"_prefix_comment":"Set the prefix to be used for commands",
 	"Prefix":["!"],
-	
+
 	"_database_comment":"The database configuration",
 	"Database":{
 		"_databasetype_comment":"The database type, supported types are tbd (i'll goal for mysqli sqlite3 at least)",
 		"DatabaseType":"",
-		
+
 		"_DB_Auth_Comment":"The authentication used for database communication",
-		"DB_Address":"localhost",
-		"DB_Pass":"password"
+		"DBAddress":"localhost",
+		"DBPass":"password"
 	}
 }
