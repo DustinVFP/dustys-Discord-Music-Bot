@@ -57,6 +57,8 @@ type cmddata struct {
 	cmdModule   string
 }
 
+var userSelf *disgord.User
+
 var cmdarray = make([]cmddata, 0)
 
 
@@ -194,17 +196,20 @@ func main() {
 		panic(err)
 	}
 
+	userSelf, err = session.GetCurrentUser().Execute()
+	if err != nil {
+		dlogger.LogOld(30, 25, "Error getting current user", "")
+		return
+	}
+	fmt.Println(userSelf.ID)
+
 	session.On(disgord.EventMessageCreate, func(session disgord.Session, data *disgord.MessageCreate) {
 		msg := data.Message
 		dlogger.LogOld(5, 15, "Message recived", msg.Content)
 
-		user, err := session.GetCurrentUser().Execute()
-		if err != nil {
-			dlogger.LogOld(30, 25, "Error getting current user", "")
-		}
-		fmt.Println(user.ID)
 		fmt.Println(data.Message.Author)
-		if data.Message.Author.ID != user.ID {
+
+		if userSelf != nil && data.Message.Author.ID != userSelf.ID {
 			if msg.ID.String() != messagechk {
 				go messageDo(session, data)
 			}

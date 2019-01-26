@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/andersfylling/disgord"
 	"time"
-	//"math"
+	"math"
 )
 
 func init() {
@@ -57,7 +57,7 @@ func init() {
 		cmdFirstChr: "h",
 		cmdModule:   "core",
 	}))
-	
+
 	// ping command
 	cmdarray = append(cmdarray, (cmddata{
 		cmdFunc: func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
@@ -89,14 +89,10 @@ func init() {
 	cmdarray = append(cmdarray, (cmddata{
 		cmdFunc: func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
 			var err error
-			user, err := session.GetCurrentUser().Execute()
-			if err == nil {
-				dlogger.LogOld(30, 25, err.Error(), "")
-			}
 			output := fmt.Sprint(	"Running: ", appname, " ", version, "\n",
 									"locally configured as: ", confName, "\n",
-									"Running under user: ", user.Username, "#", user.Discriminator, "\n\n",
-									"Started at: ", starttime.Format("3:04:05.000 PM"),
+									"Running under user: ", userSelf.Username, "#", userSelf.Discriminator, "\n\n",
+									"Started on: ", starttime.Format("2006 Jan 2 at 3:04pm"),
 									)
 			data.Message.RespondString(session, output)
 			return err
@@ -126,31 +122,38 @@ func init() {
 		cmdFirstChr: "h",
 		cmdModule:   "core",
 	}))
-	
-	// in development shenanigans (don't mind me i'm just being stupid and not knowing how golang time works and trying to figure it out the hard way)
-	
-		//cmdarray = append(cmdarray, (cmddata{
-		//cmdFunc: func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
-			//var err error
-			//var currenttime = time.Now()
-			//var difference = currenttime.Sub(starttime)
-			//if difference.Hours() > 24.0 {
-				//timeout := fmt.Sprint(math.Round(difference.Hours / 24.0))
-			//}
-			//content := fmt.Sprint(	"Has Ran for: ", timeout, "/n",
-									//"Started at: ", starttime.Format("2006 Jan 2 3:04:05.000 PM"), "/n",
-									//"Current time: ", currenttime.Format("2006 Jan 2 3:04:05.000 PM"), "/n",
-									//)
-			//output := fmt.Sprintf("%s%s%s%s", content, "<@", data.Message.Author.ID, ">")
-			//data.Message.RespondString(session, output)
-			//return err
-		//},
 
-		//cmdName:     "Uptime",
-		//cmdCalls:    []string{"uptime"},
-		//cmdMinDesc:  "How long the bot has been online for",
-		//cmdFullDesc: "Shows how long the bot has been online for aswell as the date it was started",
-		//cmdFirstChr: "u",
-		//cmdModule:   "core",
-	//}))
+		cmdarray = append(cmdarray, (cmddata{
+		cmdFunc: func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
+			var err error
+			var currenttime = time.Now()
+			var difference = currenttime.Sub(starttime)
+			var timest string
+			tstmpday := math.Floor((difference.Hours()/24))
+			tstmphrs := (math.Floor(difference.Hours()) - (tstmpday * 24))
+			tstmpmin := (math.Floor(difference.Minutes() - (tstmphrs * 60)))
+			tstmpsec := (math.Floor(difference.Seconds() - (tstmpmin * 60)))
+			if difference.Hours() > 24 {
+				timest = fmt.Sprintf("%.0f Days, %.0f Hours, %.0f Minutes", tstmpday, tstmphrs, tstmpmin)
+			} else if difference.Hours() > 1 {
+				timest = fmt.Sprintf("%.0f Hours, %.0f Minutes, %.0f Seconds", tstmphrs, tstmpmin, tstmpsec)
+			} else if difference.Hours() < 1 {
+				timest = fmt.Sprintf("%.0f Minutes, %.0f Seconds", tstmpmin, tstmpsec)
+			}
+			content := fmt.Sprint(	"Has Ran for: ", timest, "\n",
+									"Started at: ", starttime.Format("2006 Jan-2 > 3:04:05PM"), "\n",
+									"Current time: ", currenttime.Format("2006 Jan-2 > 3:04:05PM"), "\n",
+									)
+			output := fmt.Sprintf("%s%s%s%s", content, "<@", data.Message.Author.ID, ">")
+			data.Message.RespondString(session, output)
+			return err
+		},
+
+		cmdName:     "Uptime",
+		cmdCalls:    []string{"uptime"},
+		cmdMinDesc:  "How long the bot has been online for",
+		cmdFullDesc: "Shows how long the bot has been online for aswell as the date it was started",
+		cmdFirstChr: "u",
+		cmdModule:   "core",
+	}))
 }
