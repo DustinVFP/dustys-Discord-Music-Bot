@@ -38,7 +38,7 @@ type error interface {
 	Error() string
 }
 
-const version = "v0.0.1.0:alpha"
+const version = "v0.0.1.1:alpha"
 const appname = "Dustys Wip Discord Bot"
 
 var starttime = time.Now()
