@@ -6,3 +6,5 @@ written in golang, using the disgord library [github.com/andersfylling/disgord](
 
 ~~estimated date of functionality: hopefullyi functional by december and usable before the end of 2018~~
 that didn't happen so hopefully functional by april 2019
+
+edit: project put on hold until further notice, i'll be focusing on other projects for now
