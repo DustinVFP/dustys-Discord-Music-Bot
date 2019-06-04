@@ -5,7 +5,7 @@ import(
 	//"time"
 	"io/ioutil"
 	"encoding/json"
-	"./dlogger"
+	"gitea.pi.lan/DVF-Productions/DustysDBMB/dlogger"
 )
 
 type dbConf struct {

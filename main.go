@@ -1,6 +1,6 @@
 package main
 
-// bot link https://discordapp.com/api/oauth2/authorize?client_id=516941386369597441&scope=bot&permissions=518208
+// bot link https://discordapp.com/api/oauth2/authorize?client_id=539992577517027342&scope=bot&permissions=518208
 
 import (
 	"flag"
@@ -14,7 +14,7 @@ import (
 	"time"
 	"strconv"
 	//"reflect"
-	"./dlogger"
+	"gitea.pi.lan/DVF-Productions/DustysDBMB/dlogger"
 	//"database/sql"
 	//_ "github.com/go-sql-driver/mysql"
 
@@ -55,6 +55,7 @@ type cmddata struct {
 	cmdFullDesc string
 	cmdFirstChr string
 	cmdModule   string
+	cmdShowHelp bool
 }
 
 var userSelf *disgord.User
@@ -179,7 +180,7 @@ func main() {
 
 	//defer db.Close()
 
-	session, err := disgord.NewSession(&disgord.Config{
+	session, err := disgord.NewClient(&disgord.Config{
 		BotToken: confToken,
 		Logger: disgord.DefaultLogger(true),
 	})
@@ -189,21 +190,21 @@ func main() {
 		panic(err)
 	}
 
-	myself, err := session.GetCurrentUser().Execute()
+	myself, err := session.GetCurrentUser()
 	if err != nil {
 		dlogger.LogOld(50, 999999, "Discord Session error", "")
 		dlogger.LogOld(51, 999999, err.Error(), "")
 		panic(err)
 	}
 
-	userSelf, err = session.GetCurrentUser().Execute()
+	userSelf, err = session.GetCurrentUser()
 	if err != nil {
 		dlogger.LogOld(30, 25, "Error getting current user", "")
 		return
 	}
 	fmt.Println(userSelf.ID)
 
-	session.On(disgord.EventMessageCreate, func(session disgord.Session, data *disgord.MessageCreate) {
+	session.On(disgord.EvtMessageCreate, func(session disgord.Session, data *disgord.MessageCreate) {
 		msg := data.Message
 		dlogger.LogOld(5, 15, "Message recived", msg.Content)
 

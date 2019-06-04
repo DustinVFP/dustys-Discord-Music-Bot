@@ -1,12 +1,15 @@
 package main
 
 import (
-	"./dlogger"
+	"gitea.pi.lan/DVF-Productions/DustysDBMB/dlogger"
 	"fmt"
 	"github.com/andersfylling/disgord"
 	"time"
 	"math"
+	"strings"
 )
+
+var helpcache string
 
 func init() {
 
@@ -58,6 +61,65 @@ func init() {
 		cmdModule:   "core",
 	}))
 
+	cmdarray = append(cmdarray, (cmddata{
+		cmdFunc: func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
+			var err error
+
+			var output string
+
+			if helpcache == "" {
+				arraylen := len(cmdarray)
+
+				var helpsarray = make(map[string][]string)
+				var helpsmods= make([]string, 0)
+
+				var mod string
+
+				for i := 0; i < arraylen; i++ {
+					if cmdarray[i].cmdShowHelp || !cmdarray[i].cmdShowHelp {
+						mod = cmdarray[i].cmdModule
+						helpsarray[mod] = append(helpsarray[mod], (fmt.Sprint(cmdarray[i].cmdName, " : ", cmdarray[i].cmdMinDesc)))
+					}
+				}
+				fmt.Println(helpsarray)
+
+				for k := range helpsarray {
+					helpsmods = append(helpsmods, fmt.Sprint("---| " , k , " |---\n```"))
+					helpsmods = append(helpsmods, strings.Join(helpsarray[k], "\n"))
+					helpsmods = append(helpsmods, "```")
+				}
+
+				fmt.Println(helpsmods)
+				helpcache = strings.Join(helpsmods, "\n")
+			}
+
+			aln := len(args)
+
+			dlogger.LogOld(0, 5, "aln", fmt.Sprint(aln))
+
+			if aln <= 1 {
+				output = "to be written hand written help menu, append 'all' or 'cmds' to the end of the command to view auto generated command list \n or use the [to be programmed] cmds command"
+			} else if args[1] == "all" || args[1] == "cmds" {
+				output = helpcache
+			} else {
+//				if cmdc == cmdarray[i].cmdCalls[1] | cmdc == cmdarray[i].cmdName {
+//
+//					}
+				// to be written
+				output = "to be codded"
+			}
+
+			data.Message.RespondString(session, output)
+			return err
+		},
+		cmdName:     "NewHelp",
+		cmdCalls:    []string{"newhelp", "nh"},
+		cmdMinDesc:  "newhelp, displays help message with basic commands",
+		cmdFullDesc: "newHelp command, Displays and shows a list of basic commands as well as some other stuff",
+		cmdFirstChr: "n",
+		cmdModule:   "core",
+	}))
+
 	// ping command
 	cmdarray = append(cmdarray, (cmddata{
 		cmdFunc: func(args []string, session disgord.Session, data *disgord.MessageCreate) error {
@@ -66,7 +128,7 @@ func init() {
 			var msgtime = data.Message.Timestamp
 			var currenttime = time.Now()
 
-			difference := currenttime.Sub(msgtime)
+			difference := currenttime.Sub(msgtime.Time)
 
 			output := fmt.Sprintf(
 				"Pong!\n message sent at %s processed at %s \n Difference: %v",
